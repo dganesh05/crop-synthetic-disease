@@ -78,7 +78,7 @@ For this heatmap, we used cross-validation to get an averaged-out recall score f
 
 **Some factors that we look out for**
 
-* Picking a too small `n` means that the model doesn't learn from other helpful factors, but a too bug `n` means that the model learns from too much noise, especially from columns that we established have a low correlation.
+* Picking a too small `n` means that the model doesn't learn from other helpful factors, but a too big `n` means that the model learns from too much noise, especially from columns that we established have a low correlation.
 
 * A lot of combinations have a perfect recall of 1.00. This means that we have no false negatives in the prediction, which is a red flag especially for smaller datasets. It means it has perfectly memorized the dataset and will not perform well with new, unseen data. Also, note that these tend to be at `n > 14`, which aligns with the first point we made about incorporating too much noise. 
 
@@ -115,14 +115,14 @@ Because we only tested on 30 values, recall changed significantly from the 120 v
 
 ## Storytelling
 
-Our journey began with a simple question: can we reliably predict plant disease from a list of symptoms? We started with 30 potential clues and, through exploratory analysis, quickly identified a smaller group of top predictors. Our initial modeling showed promise but also highlighted a critical danger: a simple Decision Tree could be easily tricked into "memorizing" the data, leading to a perfect but misleading score.
+Our journey began with a simple question: Can we reliably predict plant disease from a list of symptoms? We started with 30 potential clues and, through exploratory analysis, quickly identified a smaller group of top predictors. Our initial modeling showed promise but also highlighted a critical danger: a simple Decision Tree could be easily tricked into "memorizing" the data, leading to a perfect but misleading score.
 
 The key insight came from comparing multiple models. An ensemble model, the Random Forest, proved to be the superior choice. It was able to achieve a high recall score of over 90% without falling into the overfitting trap. This tells us that by combining the "opinions" of many decision trees, we can build a model that is both powerful and robust.
 
-Also identifying the features that we determined contributed to disease presence: 
+Also, identifying the features that we determined contributed to disease presence: 
 
 **Features that contribute to disease presence:**
-* Is there any rotting seen on fruit?
+* Is there any rotting seen on the fruit?
 * Are the lesions expanding over time?
 * Are concentric rings visible clearly on the leaves?
 * Are the leaf margins turning brown?
@@ -136,7 +136,7 @@ Also identifying the features that we determined contributed to disease presence
 
 
 **Features that did not contribute to disease presence:**
-* Was there previous history of Early Blight in this field?
+* Was there a previous history of Early Blight in this field?
 * Was the field irrigated from overhead sprinklers?
 * Is the infection found only on mature leaves?
 * Are the affected leaves wilting?
@@ -158,34 +158,34 @@ Also identifying the features that we determined contributed to disease presence
 
 According to the model, the features that contribute most to a diagnosis are the unambiguous, advanced symptoms of the disease.
 
-* **Distinct Lesion Characteristics**: The model heavily weights the quality of the spots, not just their presence. Examples are 'Are concentric rings visible clearly', 'Is there a yellow halo around the spots?', and 'Is there any black moldy growth on the lesion?'
+* **Distinct Lesion Characteristics**: The model heavily weights the quality of the spots, not just their presence. Examples are 'Are concentric rings visible clearly?', 'Is there a yellow halo around the spots?', and 'Is there any black moldy growth on the lesion?'
 
-* **Severe Progression**: Symptoms like 'Is there any rotting seen on fruit?' and 'Does the disease affect the whole plant?' are signs of a well-established infection. 
+* **Severe Progression**: Symptoms like 'Is there any rotting seen on fruit?' and 'Doa es the disease affect the whole plant?' are signs of a well-established infection. 
 
 * **Contagion and Environment**: The model also picked up on clues that the disease is active and spreading, such as 'Are nearby tomato plants also showing similar symptoms?' and 'Is the disease more active during rainy days?'.
 
 * The **surprising feature** here is 'Was any fungicide recently applied?'. This is likely a strong predictor because farmers only apply fungicide when they already see or strongly suspect a disease. The model learned that this action is a powerful proxy for human observation of the disease. Future analyses could omit this feature and see if the recall changes. 
 
 
-The model also found that many features which seem important are actually not reliable enough for a final diagnosis. These fall into two main categories:
+The model also found that many features that seem important are actually not reliable enough for a final diagnosis. These fall into two main categories:
 
-* **General "Sick Plant" Symptoms**: Many non-contributing features are things that could be wrong with any plant for any number of reasons. 'Are the affected leaves wilting?', 'Does the leaf show signs of early yellowing?', and 'Is the plant under moisture stress?' are too generic and don't specifically point to this disease.
+* **General "Sick Plant" Symptoms**: Many non-contributing features are things that could be wrong with any plant for any number of reasons. 'Are the affected leaves wilting?', 'Does the leaf show signs of early yellowing?' and 'Is the plant under moisture stress?' are too generic and don't specifically point to this disease.
 
-* **Background & Farming Practices**: The model concluded that the current, visible evidence is far more important than the general field conditions. Factors like 'Was there previous history of Early Blight', 'Was there poor air circulation', and 'Is the farmer using resistant varieties?' are risk factors, not diagnostic proof.
+* **Background & Farming Practices**: The model concluded that the current, visible evidence is far more important than the general field conditions. Factors like 'Was there previous history of Early Blight?', 'Was there poor air circulation?' and 'Is the farmer using resistant varieties?' are risk factors, not diagnostic proof.
 
 * The most **interesting insight** comes from the symptoms it ignored, like 'Are multiple spots merging to form large blotches?' and 'Is the spot size more than 5mm in diameter?'. This tells us the model learned that the specific appearance of a spot (like having rings or mold) is a much more powerful clue than its size or how many there are. Future analyses could include more appearance-based features to see if they improve predictions. 
 
 ## Limitations
 
-This analysis would benefit from further exploration and includes several sections where readers can experiment and further improve analysis:
+This analysis would benefit from further exploration and includes several sections where readers can experiment and further improve the analysis:
 
-* Limited data: We only had 150 rows to work with, 120 for training and only 30 for testing. This made it suitable for exploratory analysis but needed more data so we can see the impact of the parameters we selected
+* Limited data: We only had 150 rows to work with, 120 for training and only 30 for testing. This made it suitable for exploratory analysis, but it needed more data so we could see the impact of the parameters we selected
 
-* Parameter tuning: Because of limited size, experimentation with the parameters of our model would not lead to much useful results. However, analysts are encouraged to tinker with these parameters, as well as try other models and `n` sizes to visualize their outcome. 
+* Parameter tuning: Because of the  limited size, experimentation with the parameters of our model would not lead to many useful results. However, analysts are encouraged to tinker with these parameters, as well as try other models and `n` sizes to visualize their outcome. 
 
 ## Impact
 
-* **Positive Impact**: This project demonstrates a clear pathway to creating data-driven tools for agriculture. A reliable model could be integrated into a mobile app allowing farmers to quickly diagnose potential diseases by answering a simple questionnaire, or into Computer Vision infrastructure that could scan for symptoms and take action as needed  (such as [greenhouses in the Netherlands](https://youtu.be/lIvrIKaNCRE?feature=shared&t=632)). This could lead to more targeted and efficient use of fungicides, reducing both costs and environmental impact, and ultimately contributing to greater crop yields.
+* **Positive Impact**: This project demonstrates a clear pathway to creating data-driven tools for agriculture. A reliable model could be integrated into a mobile app, allowing farmers to quickly diagnose potential diseases by answering a simple questionnaire, or into a  Computer Vision infrastructure that could scan for symptoms and take action as needed  (such as [greenhouses in the Netherlands](https://youtu.be/lIvrIKaNCRE?feature=shared&t=632)). This could lead to more targeted and efficient use of fungicides, reducing both costs and environmental impact, and ultimately contributing to greater crop yields.
 
 * **Potential Negative Impact**: Over-reliance on such a model could be a risk. If a new disease variant emerges with different symptoms, the model would fail to detect it. Furthermore, there's an ethical consideration regarding accessibility; if such a tool is only available on expensive devices or requires a paid subscription, it could create a technology gap that disadvantages smaller, less-resourced farms, widening the disparity in agricultural productivity. 
 
